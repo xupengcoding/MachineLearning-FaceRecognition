@@ -17,8 +17,32 @@ def load_data_xy(file_names):
     combine_data = np.hstack(datas)
     return combine_data, combine_label
 
+def cPickle_output(var, file_name):
+    import cPickle
+    f = open(file_name, 'wb')
+    cPickle.dump(vars, f, protocol=cPickle.HIGHEST_PROTOCOL)
+    f.close()
 
-def out_put_data_xy(vec_vars, vec_folder, batch_size = 1000):
+def out_put_data_xy(vector_vars, vector_folder, batch_size = 1000):
+    if not vector_folder.endswith('/'):
+        vector_folder += '/'
+    if not os.path.exists(vector_folder):
+        os.mkdir(vector_folder)
+    x, y = vector_vars
+    n_batch = len(x) / batch_size
+    for i in range(n_batch):
+        file_name = vector_folder + str(i) + '.pkl'
+        batch_x = x[i*batch_size: (i+1)*batch_size]
+        batch_y = y[i*batch_size: (i+1)*batch_size]
+        cPickle_output((batch_x, batch_y), file_name)
+    if n_batch * batch_size < len(x):
+        batch_x = x[n_batch*batch_size: ]
+        batch_y = y[n_batch*batch_size: ]
+        file_name = vector_folder + str(n_batch) + '.pkl'
+        cPickle_output((batch_x, batch_y), file_name)
+
+
+def out_put_data_xy_small(vector_vars, vector_folder):
     if not vector_folder.endswith('/'):
         vector_folder += '/'
     if not os.path.exists(vector_folder):
