@@ -8,12 +8,15 @@ from ml_file_pkg.pickle_file import load_data_xy
 from ml_file_pkg.pickle_file import out_put_data_xy
 from ml_file_pkg.pickle_file import scandir
 from ml_file_pkg.pickle_file import get_files
+from ml_file_pkg.pickle_file import cPickle_output
 import cv2
 import cv2.cv as cv
 
 if __name__ == "__main__":
     img_pkl_folder = str(sys.argv[1])
     feature_pkl_folder = str(sys.argv[2])
+    pickle_file_counter = 0
+    batch_size = int(sys.argv[3])
 
     # set display defaults
     plt.rcParams['figure.figsize'] = (10, 10)        # large images
@@ -43,6 +46,12 @@ if __name__ == "__main__":
     transformer.set_raw_scale('data', 255)      # rescale from [0, 1] to [0, 255]
     transformer.set_channel_swap('data', (2,1,0))  # swap channels from RGB to BGR
 
+    if not feature_pkl_folder.endswith('/'):
+        feature_pkl_folder += '/'
+    if not os.path.exists(feature_pkl_folder):
+        os.makedirs(feature_pkl_folder)
+
+
     for i, img_path in enumerate(img_path_vec):
         #net.blobs['data'].reshape(50, 3, 228, 228)
         #image = caffe.io.load_image('vgg_face_caffe/vgg_face_caffe/ak1.jpg')
@@ -54,9 +63,20 @@ if __name__ == "__main__":
         output = net.forward()
         caffe_ft = net.blobs['fc8'].data[0]
         img_feature_vec.append(caffe_ft)
-        if i % 10 == 0:
+        if (i+1) % 10 == 0:
             print "done: " + str(i)
+        #if i/5 == 1:
+            #break
+        if (i+1)%batch_size == 0 and (i+1)/batch_size != 0:
+            feature_pkl_path = feature_pkl_folder + str(pickle_file_counter) + ".pkl"
+            sub_img_label_vec = img_label_vec[pickle_file_counter*batch_size:(pickle_file_counter+1)*batch_size]
+            assert len(sub_img_label_vec) == len(img_feature_vec)
+            cPickle_output((sub_img_label_vec, img_feature_vec), feature_pkl_path)
+            pickle_file_counter += 1
+            img_feature_vec = []
 
-    if not os.path.exists(feature_pkl_folder):
-        os.makedirs(feature_pkl_folder)
-    out_put_data_xy((img_label_vec, img_feature_vec), feature_pkl_folder)
+    if len(img_label_vec)%batch_size != 0:
+        feature_pkl_path = feature_pkl_folder + str(pickle_file_counter) + ".pkl"
+        sub_img_label_vec = img_label_vec[pickle_file_counter*1000:]
+        cPickle_output((sub_img_label_vec, img_feature_vec), feature_pkl_path)
+        pickle_file_counter += 1
