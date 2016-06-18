@@ -42,7 +42,7 @@ def scandir(startdir, ans, last_dir):
         full_path_obj =startdir + obj
         if os.path.isdir(full_path_obj):
             scandir(full_path_obj, ans, last_dir)
-            last_dir.append(os.getcwd() + full_path_obj)
+            last_dir.append(os.getcwd() + os.sep + full_path_obj)
         else:
             ans.append(full_path_obj)
 
