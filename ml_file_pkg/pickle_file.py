@@ -4,6 +4,7 @@ import numpy as np
 import pickle
 #all pkl file format is label + content
 #load data_vec data_lable
+
 def load_data_xy(file_names):
     datas = []
     lables = []
@@ -20,7 +21,7 @@ def load_data_xy(file_names):
 def cPickle_output(var, file_name):
     import cPickle
     f = open(file_name, 'wb')
-    cPickle.dump(vars, f, protocol=cPickle.HIGHEST_PROTOCOL)
+    cPickle.dump(var, f, protocol=cPickle.HIGHEST_PROTOCOL)
     f.close()
 
 def out_put_data_xy(vector_vars, vector_folder, batch_size = 1000):
