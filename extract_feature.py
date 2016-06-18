@@ -52,7 +52,7 @@ if __name__ == "__main__":
         #plt.imshow(image)
         net.blobs['data'].data[...] = transformed_image
         output = net.forward()
-        caffe_ft = net.blobs['fc7'].data[0]
+        caffe_ft = net.blobs['fc8'].data[0]
         img_feature_vec.append(caffe_ft)
         if i % 10 == 0:
             print "done: " + str(i)
