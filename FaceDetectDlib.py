@@ -86,9 +86,9 @@ if __name__ == "__main__":
             face_save_path = img_path.replace(".jpg", suffix)
             face_save_path = face_save_path.replace(".JPG", suffix)
             face_save_path = face_save_path.replace(dir, dir+"_face")
-            img_face = cv2.resize(img_face, (228, 228))
+            img_face = cv2.resize(img_face, (224, 224))
             cv2.imwrite(face_save_path, img_face)
-            f.writelines(str(face_counter) + " " + img_path +" "+ str(d.left())+" "+str(d.top())+" "+str(d.right())+" "+str(d.bottom()) + "\n")
+            f.writelines(str(face_counter) + " " + img_path + " " + str(d.left())+" "+str(d.top())+" "+str(d.right())+" "+str(d.bottom()) + "\n")
             face_id_vec.append(face_counter)
             face_counter += 1
             face_save_path_vec.append(face_save_path)
