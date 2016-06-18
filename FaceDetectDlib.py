@@ -34,16 +34,19 @@ def output_data(vector_vars, vector_folder, batch_size=1000):
 
 
 def scandir(startdir, ans, last_dir):
-    os.chdir(startdir)
-    childlist = os.listdir(os.curdir)
+    #os.chdir(startdir)
+    if not startdir.endswith(os.sep):
+        startdir += os.sep
+    childlist = os.listdir(startdir)
     for obj in childlist:
-        if os.path.isdir(obj):
-            scandir(os.getcwd()+os.sep+obj, ans, last_dir)
+        full_path_obj =startdir + obj
+        if os.path.isdir(full_path_obj):
+            scandir(full_path_obj, ans, last_dir)
         else:
-            ans.append(os.getcwd()+os.sep+obj)
+            ans.append(full_path_obj)
             last_dir.append(os.getcwd())
 
-    os.chdir(os.pardir)
+    #os.chdir(os.pardir)
     return  ans, last_dir
 
 if __name__ == "__main__":
