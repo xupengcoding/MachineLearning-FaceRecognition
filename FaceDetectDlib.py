@@ -78,7 +78,11 @@ if __name__ == "__main__":
         if img_flag == 0:
             continue
         #img1 = io.imread(img_path)
-        dets = detector(img, 1)
+        try:
+        	dets = detector(img, 1)
+        except Exception:
+        	print "detector error"
+        	continue
         for i, d in enumerate(dets):
             if d.top() < 0 or d.left() < 0 or d.right() < 0 or d.bottom() < 0:
                 continue
