@@ -58,5 +58,5 @@ train_label_vec = np_utils.to_categorical(train_label_vec, 2)
 
 model = face_valid_net()
 history = model.fit({'input1':train1_data_vec, 'input2':train2_data_vec, 'output':train_label_vec},validation_split = 0.3, nb_epoch=10)
+model.save_weights("validation_net_weitghts", True)
 score = model.evaluate({'input1':train1_data_vec, 'input2':train2_data_vec, 'output':train_label_vec})
-moedel1 = face_valid_net()
