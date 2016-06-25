@@ -12,6 +12,7 @@ from keras.utils import np_utils
 from  keras.layers.convolutional import  Convolution2D, MaxPooling2D
 from keras.layers.core import Dense, Activation, Flatten, Dropout
 import keras.optimizers
+from keras.callbacks import ModelCheckpoint
 
 def load_data_xy(file_name):
     datas = []
@@ -57,6 +58,8 @@ train_label_vec = np.zeros(1000, dtype='int32')
 train_label_vec = np_utils.to_categorical(train_label_vec, 2)
 
 model = face_valid_net()
-history = model.fit({'input1':train1_data_vec, 'input2':train2_data_vec, 'output':train_label_vec},validation_split = 0.3, nb_epoch=10)
+
+checkpointer = ModelCheckpoint(filepath= 'weights-{epoch:02d}-{val_loss:.2f}.hdf5',verbose=1)
+history = model.fit({'input1':train1_data_vec, 'input2':train2_data_vec, 'output':train_label_vec},validation_split = 0.3, nb_epoch=10, callbacks=[checkpointer])
 model.save_weights("validation_net_weitghts", True)
 score = model.evaluate({'input1':train1_data_vec, 'input2':train2_data_vec, 'output':train_label_vec})
