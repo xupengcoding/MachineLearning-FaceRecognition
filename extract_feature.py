@@ -63,7 +63,6 @@ if __name__ == "__main__":
 
         transformed_image = transformer.preprocess('data', image)
         transformed_image = transformed_image - mu #sub mean
-        print transformed_image
         #plt.imshow(image)
         net.blobs['data'].data[...] = transformed_image
         output = net.forward()
