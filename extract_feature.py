@@ -20,9 +20,9 @@ if __name__ == "__main__":
     batch_size = int(sys.argv[3])
 
     # set display defaults
-    plt.rcParams['figure.figsize'] = (10, 10)        # large images
-    plt.rcParams['image.interpolation'] = 'nearest'  # don't interpolate: show square pixels
-    plt.rcParams['image.cmap'] = 'gray'  # use grayscale output rather than a (potentially misleading) color heatmap
+    #plt.rcParams['figure.figsize'] = (10, 10)        # large images
+    #plt.rcParams['image.interpolation'] = 'nearest'  # don't interpolate: show square pixels
+    #plt.rcParams['image.cmap'] = 'gray'  # use grayscale output rather than a (potentially misleading) color heatmap
 
     caffe.set_mode_cpu()
 
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     transformer = caffe.io.Transformer({'data':net.blobs['data'].data.shape})
     transformer.set_transpose('data', (2,0,1))  # move image channels to outermost dimension
     #transformer.set_mean('data', mu)            # subtract the dataset-mean value in each channel
-    #transformer.set_raw_scale('data', 255)      # rescale from [0, 1] to [0, 255]
+    transformer.set_raw_scale('data', 255)      # rescale from [0, 1] to [0, 255]
     transformer.set_channel_swap('data', (2,1,0))  # swap channels from RGB to BGR
 
     if not feature_pkl_folder.endswith('/'):
@@ -56,14 +56,14 @@ if __name__ == "__main__":
 
     for i, img_path in enumerate(img_path_vec):
         #net.blobs['data'].reshape(50, 3, 228, 228)
-        #image = caffe.io.load_image('vgg_face_caffe/vgg_face_caffe/ak1.jpg')
         #image1 = cv2.imread('vgg_face_caffe/vgg_face_caffe/ak.png')
-       # image = caffe.io.load_image(img_path)
-        image = cv2.imread(img_path)
-        image = np.float32(image)
+        image = caffe.io.load_image(img_path)
+        image_cv2 = cv2.imread(img_path)
+        #image = np.float32(image)
 
         transformed_image = transformer.preprocess('data', image)
         transformed_image = transformed_image - mu #sub mean
+        print transformed_image
         #plt.imshow(image)
         net.blobs['data'].data[...] = transformed_image
         output = net.forward()
