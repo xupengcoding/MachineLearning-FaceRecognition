@@ -58,7 +58,7 @@ if __name__ == "__main__":
         #net.blobs['data'].reshape(50, 3, 228, 228)
         #image1 = cv2.imread('vgg_face_caffe/vgg_face_caffe/ak.png')
         image = caffe.io.load_image(img_path)
-        image_cv2 = cv2.imread(img_path)
+        #image_cv2 = cv2.imread(img_path)
         #image = np.float32(image)
 
         transformed_image = transformer.preprocess('data', image)
