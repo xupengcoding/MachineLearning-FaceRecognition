@@ -36,15 +36,16 @@ if __name__ == "__main__":
     #create net
     net = caffe.Net(model_def, model_weights, caffe.TEST)
 
-    mu = np.load('vgg_face_caffe/vgg_face_caffe/ilsvrc_2012_mean.npy')
-    mu = mu.mean(1).mean(1)  # average over pixels to obtain the mean (BGR) pixel values
-    print 'mean-subtracted values:', zip('BGR', mu)
+    #mu = np.load('vgg_face_caffe/vgg_face_caffe/ilsvrc_2012_mean.npy')
+    #mu = mu.mean(1).mean(1)  # average over pixels to obtain the mean (BGR) pixel values
+    #print 'mean-subtracted values:', zip('BGR', mu)
     #mu=[129.1863, 104.7624, 93.5940]
-    mu=np.array([129.1863, 104.7624, 93.5940])
+    mu=np.array([93.5940, 104.7624, 129.1863])
+    mu = mu.reshape((3,1,1))
     transformer = caffe.io.Transformer({'data':net.blobs['data'].data.shape})
     transformer.set_transpose('data', (2,0,1))  # move image channels to outermost dimension
-    transformer.set_mean('data', mu)            # subtract the dataset-mean value in each channel
-    transformer.set_raw_scale('data', 255)      # rescale from [0, 1] to [0, 255]
+    #transformer.set_mean('data', mu)            # subtract the dataset-mean value in each channel
+    #transformer.set_raw_scale('data', 255)      # rescale from [0, 1] to [0, 255]
     transformer.set_channel_swap('data', (2,1,0))  # swap channels from RGB to BGR
 
     if not feature_pkl_folder.endswith('/'):
@@ -57,8 +58,12 @@ if __name__ == "__main__":
         #net.blobs['data'].reshape(50, 3, 228, 228)
         #image = caffe.io.load_image('vgg_face_caffe/vgg_face_caffe/ak1.jpg')
         #image1 = cv2.imread('vgg_face_caffe/vgg_face_caffe/ak.png')
-        image = caffe.io.load_image(img_path)
+       # image = caffe.io.load_image(img_path)
+        image = cv2.imread(img_path)
+        image = np.float32(image)
+
         transformed_image = transformer.preprocess('data', image)
+        transformed_image = transformed_image - mu #sub mean
         #plt.imshow(image)
         net.blobs['data'].data[...] = transformed_image
         output = net.forward()
@@ -74,7 +79,9 @@ if __name__ == "__main__":
             assert len(sub_img_label_vec) == len(img_feature_vec)
             cPickle_output((sub_img_label_vec, img_feature_vec), feature_pkl_path)
             pickle_file_counter += 1
+            del img_feature_vec[:]
             img_feature_vec = []
+
 
     if len(img_label_vec)%batch_size != 0:
         feature_pkl_path = feature_pkl_folder + str(pickle_file_counter) + ".pkl"
