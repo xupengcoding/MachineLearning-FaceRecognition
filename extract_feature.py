@@ -4,6 +4,7 @@ import caffe
 import sys
 import os
 import pickle
+import copy
 from ml_file_pkg.pickle_file import load_data_xy
 from ml_file_pkg.pickle_file import out_put_data_xy
 from ml_file_pkg.pickle_file import scandir
@@ -62,7 +63,7 @@ if __name__ == "__main__":
         net.blobs['data'].data[...] = transformed_image
         output = net.forward()
         caffe_ft = net.blobs['fc8'].data[0]
-        img_feature_vec.append(caffe_ft)
+        img_feature_vec.append(copy.deepcopy(caffe_ft))
         if (i+1) % 10 == 0:
             print "done: " + str(i)
         #if i/5 == 1:
