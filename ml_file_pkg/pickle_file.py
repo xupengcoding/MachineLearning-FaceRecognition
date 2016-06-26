@@ -15,7 +15,7 @@ def load_data_xy(file_names):
         lables.append(x)
 
     combine_label = np.hstack(lables)
-    combine_data = np.hstack(datas)
+    combine_data = np.vstack(datas)
     return combine_data, combine_label
 
 def cPickle_output(var, file_name):
