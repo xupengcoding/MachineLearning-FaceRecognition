@@ -59,7 +59,7 @@ train_label_vec = np_utils.to_categorical(train_label_vec, 2)
 
 model = face_valid_net()
 
-checkpointer = ModelCheckpoint(filepath= 'weights-{epoch:02d}-{val_loss:.2f}.hdf5',verbose=1)
-history = model.fit({'input1':train1_data_vec, 'input2':train2_data_vec, 'output':train_label_vec},validation_split = 0.3, nb_epoch=10, callbacks=[checkpointer])
-model.save_weights("validation_net_weitghts", True)
+checkpointer = ModelCheckpoint(filepath= 'weights-{epoch:02d}-{val_loss:.2f}.hdf5',verbose=1, save_best_only=True)
+history = model.fit({'input1':train1_data_vec, 'input2':train2_data_vec, 'output':train_label_vec},validation_split = 0.1, nb_epoch=10, callbacks=[checkpointer])
+model.save_weights("validation_net_weitghts_last.hdf5", True)
 score = model.evaluate({'input1':train1_data_vec, 'input2':train2_data_vec, 'output':train_label_vec})
