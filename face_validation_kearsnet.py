@@ -34,7 +34,7 @@ def face_valid_net():
                          inputs=['dense1', 'dense2'], merge_mode='concat')
 
     #sotmax
-    keras_model.add_node(layer=Dense(1, activation='relu'), name='dense4', input='dense3')
+    keras_model.add_node(layer=Dense(1, activation='sigmoid'), name='dense4', input='dense3')
     keras_model.add_output('output', input='dense4')
     #add soft max  or min_max or maxpooling
     keras_model.compile('adadelta', {'output': 'mean_squared_error'})
