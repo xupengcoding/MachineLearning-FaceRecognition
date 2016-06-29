@@ -34,10 +34,10 @@ def face_valid_net():
                          inputs=['dense1', 'dense2'], merge_mode='concat')
 
     #sotmax
-    keras_model.add_node(layer=Dense(2, activation='softmax'), name='dense4', input='dense3')
+    keras_model.add_node(layer=Dense(1, activation='relu'), name='dense4', input='dense3')
     keras_model.add_output('output', input='dense4')
     #add soft max  or min_max or maxpooling
-    keras_model.compile('adadelta', {'output': 'categorical_crossentropy'},metrics=['accuracy'])
+    keras_model.compile('adadelta', {'output': 'mean_squared_error'})
     return keras_model
 
     #history = keras_model.fit({'input1':X_train, 'input2':X2_train, 'output':y_train}, nb_epoch=10)
@@ -58,14 +58,14 @@ if __name__ == "__main__":
     train1_len = len(train1_label_vec)
     train2_len = len(train2_label_vec)
     assert train1_len == train2_len
-    train_label_vec = np.zeros(train1_len, dtype='int32')
+    train_label_vec = np.zeros(train1_len, dtype='float32')
     for i in range(train1_len):
         if train1_label_vec[i] == train2_label_vec[i]:#the same person
-            train_label_vec[i] = 1
+            train_label_vec[i] = 1.
         else:
-            train_label_vec[i] = 0
+            train_label_vec[i] = 0.
 
-    train_label_vec = np_utils.to_categorical(train_label_vec, 2)
+    #train_label_vec = np_utils.to_categorical(train_label_vec, 2)
 
     model = face_valid_net()
     model.summary()
